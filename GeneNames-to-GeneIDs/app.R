@@ -1,28 +1,36 @@
 source("https://bioconductor.org/biocLite.R")
 library(biomaRt)
 library(shiny)
+library(shinythemes)
+library(dplyr)
 
 ui <- fluidPage(
-  theme = "theme.css", 
-    titlePanel("Obtain gene IDs for gene names", 
-               windowTitle = "Gene IDs for gene names"),
-    sidebarLayout(
-      sidebarPanel(
-        fileInput("file2", h3("Please upload a gene list"), 
-                  accept = c("text/csv", "text/comma-separated-values, 
-                             text/plain", ".csv")),
-        radioButtons("radio", label=h3("Choose a species"),
-                     choices=list("Mouse" = 1,
-                                  "Human" = 2),
-                     selected = 1),
-        hr(),
-        downloadButton("downloadData", "Download")
-    ),
-
+  theme = shinytheme("readable"), 
+  titlePanel("ENSEMBL Gene IDs and Gene Names Converter", 
+             windowTitle = "Gene IDs and gene names"),
+  sidebarLayout(
+    sidebarPanel(
+      radioButtons("radio", label=h3("Choose a species"),
+                   choices=list("Mouse" = 1,
+                                "Human" = 2),
+                   selected = 1),
+      radioButtons("radio_function", label=h3("What would you like to do?"),
+                   choices=list("Convert gene ID to gene name" = 1,
+                                "Convert gene name to gene ID" = 2
+                                ),
+                   selected = 1),
+      fileInput("file2", h3("Please upload a gene list"), 
+                accept = c("text/csv", "text/comma-separated-values, 
+                           text/plain", ".csv")),
+      submitButton("Submit"),
+      hr(),
+      downloadButton("downloadData", "Download")
+                ),
+    
     mainPanel(
       tableOutput("output_geneids")
     )
-    )
+)
 )
 
 server <- function(input, output) {
@@ -31,7 +39,7 @@ server <- function(input, output) {
     if (is.null(file2)) {
       return(NULL)
     }
-
+    
     data2 <- read.table(file2$datapath, stringsAsFactors = F)
     user_input <- data2$V1
     
@@ -41,20 +49,28 @@ server <- function(input, output) {
       dataset_name <- "hsapiens_gene_ensembl"
       user_input <- toupper(user_input)
     }
-    
-    
     ensembl <- useMart("ensembl", host="http://aug2017.archive.ensembl.org", 
                        dataset = dataset_name)
-    mapping <- getBM(attributes = c('external_gene_name', 'ensembl_gene_id'), 
+    
+    mapping <- getBM(attributes = c('ensembl_gene_id', 'external_gene_name'), 
                      mart = ensembl)
     
-    fileText <- mapping[mapping$external_gene_name %in% user_input, ]
-    
+    if (input$radio_function == 1) {
+      fileText <- mapping[mapping$ensembl_gene_id %in% user_input, ]
+      fileText <- fileText %>% slice(match(user_input, ensembl_gene_id))
+
+
+    } else if (input$radio_function == 2) {
+      fileText <- mapping[mapping$external_gene_name %in% user_input, ]
+      fileText <- fileText %>% slice(match(user_input, external_gene_name))
+
+    }
+  
   })
   
   output$output_geneids <- renderTable({
     datasetInput()
-    })
+  })
   
   output$downloadData <- downloadHandler(
     filename = function() {"output.txt"},
@@ -62,8 +78,7 @@ server <- function(input, output) {
       write.table(datasetInput(), file, row.names = F, quote = F, sep = "\t")
     }
   )
-
+  
 }
 
 shinyApp(ui = ui, server = server)
-
