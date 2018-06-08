@@ -52,7 +52,10 @@ server <- function(input, output) {
     ensembl <- useMart("ensembl", host="http://aug2017.archive.ensembl.org", 
                        dataset = dataset_name)
     
-    mapping <- getBM(attributes = c('ensembl_gene_id', 'external_gene_name'), 
+    mapping <- getBM(attributes = c('ensembl_gene_id', 'external_gene_name', 
+                                    'chromosome_name', 'start_position', 
+                                    'end_position', 'gene_biotype', 'description', 
+                                    'strand'), 
                      mart = ensembl)
     
     if (input$radio_function == 1) {
