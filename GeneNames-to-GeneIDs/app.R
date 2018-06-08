@@ -5,14 +5,15 @@ library(shinythemes)
 library(dplyr)
 
 ui <- fluidPage(
-  theme = shinytheme("readable"), 
-  titlePanel("ENSEMBL Gene IDs and Gene Names Converter", 
+  theme = shinytheme("cosmo"), 
+  titlePanel("Obtain attributes for genes", 
              windowTitle = "Gene IDs and gene names"),
   sidebarLayout(
     sidebarPanel(
       radioButtons("radio", label=h3("Choose a species"),
                    choices=list("Mouse" = 1,
-                                "Human" = 2),
+                                "Human" = 2,
+                                "Rat" = 3),
                    selected = 1),
       radioButtons("radio_function", label=h3("What would you like to do?"),
                    choices=list("Convert gene ID to gene name" = 1,
@@ -40,34 +41,39 @@ server <- function(input, output) {
       return(NULL)
     }
     
-    data2 <- read.table(file2$datapath, stringsAsFactors = F)
-    user_input <- data2$V1
-    
+    # determine species
     if (input$radio == 1) {
       dataset_name <- "mmusculus_gene_ensembl"
     } else if (input$radio == 2) {
       dataset_name <- "hsapiens_gene_ensembl"
       user_input <- toupper(user_input)
+    } else if (input$radio == 3) {
+        dataset_name <- "rnorvegicus_gene_ensembl"
     }
+    
+    # read input genes
+    data2 <- data.frame(read.table(file2$datapath, stringsAsFactors = F))
+    
     ensembl <- useMart("ensembl", host="http://aug2017.archive.ensembl.org", 
                        dataset = dataset_name)
-    
     mapping <- getBM(attributes = c('ensembl_gene_id', 'external_gene_name', 
                                     'chromosome_name', 'start_position', 
-                                    'end_position', 'gene_biotype', 'description', 
-                                    'strand'), 
-                     mart = ensembl)
+                                    'end_position', 'gene_biotype', 'description'), 
+                     values = data2, mart = ensembl)
     
+    # gene id or gene name
     if (input$radio_function == 1) {
-      fileText <- mapping[mapping$ensembl_gene_id %in% user_input, ]
-      fileText <- fileText %>% slice(match(user_input, ensembl_gene_id))
-
+        common_col <- "ensembl_gene_id"
+        colnames(data2) <- c(common_col)
 
     } else if (input$radio_function == 2) {
-      fileText <- mapping[mapping$external_gene_name %in% user_input, ]
-      fileText <- fileText %>% slice(match(user_input, external_gene_name))
+        common_col <- "external_gene_name"
+        colnames(data2) <- c(common_col)
 
     }
+    
+    fileText <- left_join(x=data2, y=mapping, 
+                          by=common_col)
   
   })
   
