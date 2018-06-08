@@ -41,18 +41,31 @@ server <- function(input, output) {
       return(NULL)
     }
     
+    # read input genes
+    data2 <- data.frame(read.table(file2$datapath, stringsAsFactors = F))
+    
     # determine species
     if (input$radio == 1) {
       dataset_name <- "mmusculus_gene_ensembl"
     } else if (input$radio == 2) {
       dataset_name <- "hsapiens_gene_ensembl"
-      user_input <- toupper(user_input)
+      data2 <- data.frame(lapply(data2, function(v) {
+        if (is.character(v)) return(toupper(v))
+        else return(v)
+      }))
     } else if (input$radio == 3) {
         dataset_name <- "rnorvegicus_gene_ensembl"
     }
-    
-    # read input genes
-    data2 <- data.frame(read.table(file2$datapath, stringsAsFactors = F))
+
+    # gene id or gene name
+    if (input$radio_function == 1) {
+      common_col <- "ensembl_gene_id"
+      colnames(data2) <- c(common_col)
+      
+    } else if (input$radio_function == 2) {
+      common_col <- "external_gene_name"
+      colnames(data2) <- c(common_col)
+    }
     
     ensembl <- useMart("ensembl", host="http://aug2017.archive.ensembl.org", 
                        dataset = dataset_name)
@@ -61,16 +74,7 @@ server <- function(input, output) {
                                     'end_position', 'gene_biotype', 'description'), 
                      values = data2, mart = ensembl)
     
-    # gene id or gene name
-    if (input$radio_function == 1) {
-        common_col <- "ensembl_gene_id"
-        colnames(data2) <- c(common_col)
 
-    } else if (input$radio_function == 2) {
-        common_col <- "external_gene_name"
-        colnames(data2) <- c(common_col)
-
-    }
     
     fileText <- left_join(x=data2, y=mapping, 
                           by=common_col)
