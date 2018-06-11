@@ -15,7 +15,7 @@ ui <- fluidPage(
                                 "Human" = 2,
                                 "Rat" = 3),
                    selected = 1),
-      fileInput("file2", h3("Please upload a list of ENSEMBL gene IDs/gene names"), 
+      fileInput("file2", h3("Upload a list of Ensembl gene IDs/gene names"), 
                 accept = c("text/csv", "text/comma-separated-values, 
                            text/plain", ".csv")),
       submitButton("Submit"),
