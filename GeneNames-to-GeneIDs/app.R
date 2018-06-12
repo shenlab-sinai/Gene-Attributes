@@ -52,7 +52,7 @@ server <- function(input, output) {
       dataset_name <- "rnorvegicus_gene_ensembl"
     }
     
-    if(grepl("ENS", data1[1,1])){
+    if(length(data1[grepl("^ENS", data1$V1),]) > length(data1[!grepl("^ENS", data1$V1),])){
       common_col = "ensembl_gene_id"
     } else {
       common_col = "external_gene_name"
