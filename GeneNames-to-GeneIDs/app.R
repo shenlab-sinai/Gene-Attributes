@@ -3,14 +3,16 @@ library(biomaRt)
 library(shiny)
 library(shinythemes)
 library(dplyr)
+library(shinydashboard)
 
-ui <- fluidPage(
-  theme = shinytheme("cosmo"), 
-  titlePanel("Obtain attributes for genes", 
-             windowTitle = "Gene IDs and gene names"),
-  sidebarLayout(
-    sidebarPanel(
-      radioButtons("radio", label=h3("Choose a species"),
+ui <- dashboardPage(
+  dashboardHeader(
+      title = "Obtain Attributes for Genes",
+      titleWidth = 380
+  ),
+  dashboardSidebar(
+      width = 380,
+      radioButtons("radio", label=h3("Select a species"),
                    choices=list("Mouse" = 1,
                                 "Human" = 2,
                                 "Rat" = 3),
@@ -18,16 +20,36 @@ ui <- fluidPage(
       fileInput("file2", h3("Upload a list of Ensembl gene IDs/gene names"), 
                 accept = c("text/csv", "text/comma-separated-values, 
                            text/plain", ".csv")),
-      submitButton("Submit"),
+
       hr(),
-      downloadButton("downloadData", "Export table")
-                ),
-    
-    mainPanel(
-      tableOutput("output_geneids")
-    )
+      h4("Export table to a text file -"),
+      downloadButton("downloadData", "Download", icon("paper-plane"),
+                     style="color: #fff; background-color: maroon; 
+                    border-color: black")
+
+  ),
+  dashboardBody(
+      tags$head(
+          tags$link(rel="stylesheet", type = "text/css", href = "custom.css")
+      ),#background = "light-blue",height = 330, width = 100, 
+      box(collapsible=T,
+      tags$h2("About -"),
+      tags$h4("This application is for obtaining more details about the genes in 
+              your gene list."),
+      tags$h2("Instructions -"),
+      tags$h4("1. Select a species"),
+      tags$h4("2. Upload a genelist"),
+      tags$h4("3. Wait ..."),
+      tags$h4("4. Done!"),
+      tags$h4("If you wish, you can export the table by clicking on the button 'Download'")),
+      
+      fluidPage(
+          tableOutput("output_geneids")
+      )
+  ),
+  skin="red"
   )
-)
+
 
 server <- function(input, output) {
   datasetInput <- reactive({
