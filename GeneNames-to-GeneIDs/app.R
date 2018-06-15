@@ -17,15 +17,25 @@ ui <- dashboardPage(
                                 "Human" = 2,
                                 "Rat" = 3),
                    selected = 1),
-      fileInput("file2", h3("Upload a list of Ensembl gene IDs/gene names"), 
+      fileInput("file2", h3("Upload a list of Ensembl Gene IDs or Gene names"), 
                 accept = c("text/csv", "text/comma-separated-values, 
                            text/plain", ".csv")),
+      h3("Sample datasets"),
+      downloadButton("example1", "Dataset 1", icon("paper-plane"),
+                     style="color: #fff; background-color: maroon; 
+                    border-color: black"),
+      br(),
+      br(),
+      downloadButton("example2", "Dataset 2", icon("paper-plane"),
+                     style="color: #fff; background-color: maroon; 
+                    border-color: black"),
 
       hr(),
-      h4("Export table to a text file -"),
+      h3("Export data to a text file"),
       downloadButton("downloadData", "Download", icon("paper-plane"),
                      style="color: #fff; background-color: maroon; 
                     border-color: black")
+
 
   ),
   dashboardBody(
@@ -60,6 +70,7 @@ server <- function(input, output) {
     
     # read input genes
     data1 <- data.frame(read.table(file2$datapath, stringsAsFactors = F))
+
     
     # determine species
     if (input$radio == 1) {
@@ -93,10 +104,17 @@ server <- function(input, output) {
                           by=common_col)
     
   })
+  mapping_example_data <- getBM(mart = useMart("ensembl", host="http://aug2017.archive.ensembl.org", 
+                                               dataset = "mmusculus_gene_ensembl"), attributes = c('external_gene_name', 'ensembl_gene_id'))
+  mapping_example_data <- sample_n(data.frame(mapping_example_data), 20)
+  example_data1 <- as.data.frame(mapping_example_data$external_gene_name)
+  example_data2 <- as.data.frame(mapping_example_data$ensembl_gene_id)
+  
   
   output$output_geneids <- renderTable({
     datasetInput()
   })
+
   
   output$downloadData <- downloadHandler(
     filename = function() {"output.txt"},
@@ -104,7 +122,19 @@ server <- function(input, output) {
       write.table(datasetInput(), file, row.names = F, quote = F, sep = "\t")
     }
   )
-  
+ 
+  output$example1 <- downloadHandler(
+      filename = function() {"example1.txt"},
+      content = function(file){
+          write.table(example_data1, file, row.names = F, quote = F, sep = "\t", col.names = F)
+      }
+  )
+  output$example2 <- downloadHandler(
+      filename = function() {"example2.txt"},
+      content = function(file){
+          write.table(example_data2, file, row.names = F, quote = F, sep = "\t", col.names = F)
+      }
+  )
 }
 
 shinyApp(ui = ui, server = server)
