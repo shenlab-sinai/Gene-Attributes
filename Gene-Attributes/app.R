@@ -44,14 +44,14 @@ ui <- dashboardPage(
       ),#background = "light-blue",height = 330, width = 100, 
       box(collapsible=T,
       tags$h2("About -"),
-      tags$h4("This application is for obtaining more details about the genes in 
+      tags$h4("This application is for obtaining the coordinates and description of genes in 
               your gene list."),
       tags$h2("Instructions -"),
       tags$h4("1. Select a species"),
-      tags$h4("2. Upload a genelist"),
+      tags$h4("2. Upload a genelist/sample dataset"),
       tags$h4("3. Wait ..."),
       tags$h4("4. Done!"),
-      tags$h4("If you wish, you can export the table by clicking on the button 'Download'")),
+      tags$h4("If you wish, you may export the table by clicking on the'Download' button")),
       
       fluidPage(
           tableOutput("output_geneids")
