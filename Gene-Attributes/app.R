@@ -51,7 +51,7 @@ ui <- dashboardPage(
       tags$h4("2. Upload a genelist/sample dataset"),
       tags$h4("3. Wait ..."),
       tags$h4("4. Done!"),
-      tags$h4("If you wish, you may export the table by clicking on the'Download' button")),
+      tags$h4("If you wish, you may export the table by clicking on the 'Download' button")),
       
       fluidPage(
           tableOutput("output_geneids")
