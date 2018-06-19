@@ -40,7 +40,8 @@ ui <- dashboardPage(
   ),
   dashboardBody(
       tags$head(
-          tags$link(rel="stylesheet", type = "text/css", href = "custom.css")
+          tags$link(rel="stylesheet", type = "text/css", href = "custom.css"),
+          tags$head(includeScript("google-analytics.js"))
       ),#background = "light-blue",height = 330, width = 100, 
       box(collapsible=T,
       tags$h2("About -"),
