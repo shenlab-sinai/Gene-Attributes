@@ -5,7 +5,8 @@ library(shinythemes)
 library(dplyr)
 library(shinydashboard)
 
-ui <- dashboardPage(
+ui <- tagList(
+  dashboardPage(
   dashboardHeader(
       title = "Obtain Attributes for Genes",
       titleWidth = 380
@@ -58,9 +59,23 @@ ui <- dashboardPage(
           tableOutput("output_geneids")
       )
   ),
-  skin="red"
+  skin="red"),
+  tags$footer("Aarthi Ramakrishnan",br(),align = "right", 
+              style = "
+              position:absolute;
+              bottom:0;
+              width:100%;
+              height:50px;
+              color: white;
+              padding: 10px;
+              background-color: orangered;
+              z-index: 1000;", 
+              a(href="http://labs.neuroscience.mssm.edu/project/shen-lab/", 
+                "Shen Lab at Mount Sinai", 
+                target="_blank", style="color: lightblue"
+                )
   )
-
+)
 
 server <- function(input, output) {
   datasetInput <- reactive({
