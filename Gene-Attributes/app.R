@@ -62,14 +62,17 @@ ui <- tagList(
   skin="red"),
   tags$footer("Aarthi Ramakrishnan",br(),align = "right", 
               style = "
-              position:absolute;
-              bottom:0;
-              width:100%;
+              position: relative;
+              margin-top: -50px;
+              bottom: 0px;
+              width: 100%;
               height:50px;
+              clear: both;
               color: white;
               padding: 10px;
               background-color: orangered;
-              z-index: 1000;", 
+              z-index: 1000;
+              left: 0", 
               a(href="http://labs.neuroscience.mssm.edu/project/shen-lab/", 
                 "Shen Lab at Mount Sinai", 
                 target="_blank", style="color: lightblue"
