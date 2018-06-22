@@ -31,7 +31,9 @@ ui <- tagList(
                      style="color: #fff; background-color: maroon; 
                     border-color: black"),
 
-      hr(),
+      # hr(),
+      br(),
+      br(),
       h3("Export data to a text file"),
       downloadButton("downloadData", "Download", icon("paper-plane"),
                      style="color: #fff; background-color: maroon; 
@@ -39,21 +41,27 @@ ui <- tagList(
 
 
   ),
-  dashboardBody(
+  body <- dashboardBody(
       tags$head(
           tags$link(rel="stylesheet", type = "text/css", href = "custom.css"),
           tags$head(includeScript("google-analytics.js"))
       ),#background = "light-blue",height = 330, width = 100, 
       box(collapsible=T,
-      tags$h2("About -"),
-      tags$h4("This application is for obtaining the coordinates and description of genes in 
-              your gene list."),
-      tags$h2("Instructions -"),
-      tags$h4("1. Select a species"),
-      tags$h4("2. Upload a genelist/sample dataset"),
-      tags$h4("3. Wait ..."),
-      tags$h4("4. Done!"),
-      tags$h4("If you wish, you may export the table by clicking on the 'Download' button")),
+      tags$h3("About"),
+      tags$p("This application is for obtaining the coordinates and description of genes in 
+              a gene list."),
+      tags$h3("Instructions"),
+      tags$ol(
+          tags$li("Select a species"),
+          tags$li("Upload a genelist/sample dataset"),
+          tags$li("Wait ..."),
+          tags$li("Done!"),
+          tags$li("If you wish, you may export the table by clicking on the 'Download' button")
+      ),
+      tags$h3("Contact"), 
+      tags$p("Aarthi Ramakrishnan","[aarthi.ramakrishnan@mssm.edu]", br(), "Li Shen, PhD", "[li.shen@mssm.edu]", br(), tags$a(href="http://labs.neuroscience.mssm.edu/project/shen-lab/", "Shen Lab at Mount Sinai", target="_blank"))
+      ),
+      
       
       fluidPage(
           tableOutput("output_geneids")
