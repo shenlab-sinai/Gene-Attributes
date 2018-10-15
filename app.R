@@ -48,7 +48,7 @@ ui <- tagList(
       ),#background = "light-blue",height = 330, width = 100, 
       box(collapsible=T,
       tags$h3("About"),
-      tags$p("This application is for obtaining the coordinates and description of genes in 
+      tags$p("This application obtains the coordinates and description of genes in 
               a gene list."),
       tags$h3("Instructions"),
       tags$ol(
