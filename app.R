@@ -1,4 +1,3 @@
-source("https://bioconductor.org/biocLite.R")
 library(biomaRt)
 library(shiny)
 library(shinythemes)
@@ -56,7 +55,7 @@ ui <- tagList(
           tags$li("Upload a genelist/sample dataset"),
           tags$li("Wait ..."),
           tags$li("Done!"),
-          tags$li("If you wish, you may export the table by clicking on the 'Download' button")
+          tags$li("You may export the table by clicking on the 'Download' button")
       ),
       tags$h3("Contact"), 
       tags$p("Aarthi Ramakrishnan","[aarthi.ramakrishnan@mssm.edu]", br(), "Li Shen, PhD", "[li.shen@mssm.edu]", br(), tags$a(href="http://labs.neuroscience.mssm.edu/project/shen-lab/", "Shen Lab at Mount Sinai", target="_blank"))
