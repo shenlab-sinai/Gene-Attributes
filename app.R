@@ -119,7 +119,7 @@ server <- function(input, output) {
     
     colnames(data1) <- c(common_col) 
     
-    ensembl <- useMart("ensembl", host="http://aug2017.archive.ensembl.org", 
+    ensembl <- useMart("ensembl", host="http://sep2019.archive.ensembl.org", 
                        dataset = dataset_name)
     mapping <- getBM(attributes = c('ensembl_gene_id', 'external_gene_name', 
                                     'chromosome_name', 'start_position', 
@@ -130,7 +130,7 @@ server <- function(input, output) {
                           by=common_col)
     
   })
-  mapping_example_data <- getBM(mart = useMart("ensembl", host="http://aug2017.archive.ensembl.org", 
+  mapping_example_data <- getBM(mart = useMart("ensembl", host="http://sep2019.archive.ensembl.org", 
                                                dataset = "mmusculus_gene_ensembl"), attributes = c('external_gene_name', 'ensembl_gene_id'))
   mapping_example_data <- sample_n(data.frame(mapping_example_data), 20)
   example_data1 <- as.data.frame(mapping_example_data$external_gene_name)
